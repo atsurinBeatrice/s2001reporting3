@@ -17,18 +17,21 @@
   git config --global user.email "atsushi.kitagawa@dxc.com"
   git config --global user.name "atsurinange"
 
-4) Enable renv on Environments of "Project Options"
-
-5) Update following R initial settings
+4) Update following R initial settings
 - .Renviron     for definition where is global cache
-- .Rprofilel    for definition of custom logger to enable logging high-level info
+- .Rprofile     for definition of custom logger to enable logging high-level info
 
-6) Pull your own branch from Remote Repo(GitHub)
+5) Enable renv on Environments of "Project Options"
 
-7) Create your own Rscripits under the project folder
+6) (Option) chmod the renv folder for project library in case of collaboration with other users
+- chmod -R g+rwx renv/library/R-4.3/x86_64-pc-linux-gnu/renv
 
-8) Install required R packages
+7) Pull your own branch from Remote Repo(GitHub)
 
-9) Take a snapshot of renv.lock
+8) Create your own Rscripits under the project folder
 
-10) Commit and push to your own branch.
+9) Install required R packages
+
+10) Take a snapshot of renv.lock
+
+11) Commit and push to your own branch.
