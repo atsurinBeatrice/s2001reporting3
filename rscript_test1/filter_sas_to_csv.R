@@ -5,20 +5,50 @@
 # 入力: <input.sas7bdat> <column_name> <search_value> <output_base> 
 # 出力: <output_base>.csv（中間ファイル）
 # その後、SASで CSV -> sas7bdat へ変換
+# 2025/12/09 This comment is added
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ### Initialize Script Information ###
 current_script_name <- "filter_sas_to_csv.R"
-actual_executor <- "Kitagawa, Atsushi:B06823"
+#actual_executor <- "Kitagawa, Atsushi:B06823"
 
-### Using Logger: Start ###
+### Using Logger: Initialize ###
 if (!exists(".app_logger_initialized", inherits=TRUE)) {
   try(.local_init_app_logger(), silent=TRUE)
 }
+################################
+
 uid <- current_user_id()
 sid <- current_session_id()
+
+args <- commandArgs(trailingOnly = TRUE)
+if (length(args) < 5) {
+  message("Usage: Rscript filter_sas_to_csv.R <input.sas7bdat> <column> <value> <output_base> <run_user>")
+  
+  ### Using Logger: Argument error ###
+  log_error("Invalid arguments", action="arg_parse", expected="input,column,value,output", got=args)
+  ####################################
+  quit(status=1)
+}
+
+in_path  <- args[1]; col <- args[2]; val <- args[3]; out_base <- args[4]; actual_executor <- args[5]
+#========== Using followings in testing at console ============
+#in_path <- "/studies/STD0001/s1reporting1_beatrice/01_input/ae.sas7bdat"
+#col <- "AETERM"
+#val <- "発熱"
+#out_base <- "/studies/STD0001/s1reporting1_beatrice/02_output/fever"
+#out_base <- "/studies/STD0001/s1reporting1_beatrice/02_output/fever.csv"
+#actual_executor <- "Kitagawa, Atsushi:B06823"
+
+### Using Logger: Start ###
 log_info("Script starts!!", action="script_start", user_id=uid, session_id=sid)
 ###########################
+
+
+### Using Logger: Arguments information ###
+log_info("Arguments detail", action="arg_parse", input=in_path, column=col, searchValue=val, output=out_base, run_user=actual_executor)
+###########################################
+
 
 req_pkgs <- c("haven", "dplyr", "readr")
 missing <- req_pkgs[!req_pkgs %in% installed.packages()[, "Package"]]
@@ -28,28 +58,6 @@ if (length(missing) > 0) install.packages(missing, repos = "https://cloud.r-proj
 suppressPackageStartupMessages({
   library(haven); library(dplyr); library(readr)
 })
-
-args <- commandArgs(trailingOnly = TRUE)
-if (length(args) < 4) {
-  message("Usage: Rscript filter_sas_to_csv.R <input.sas7bdat> <column> <value> <output_base>")
-  
-  ### Using Logger: Argument error ###
-  log_error("Invalid arguments", action="arg_parse", expected="input,column,value,output", got=args)
-  ####################################
-  quit(status=1)
-}
-
-in_path  <- args[1]; col <- args[2]; val <- args[3]; out_base <- args[4]
-#========== Using followings in testing at console ============
-#in_path <- "/studies/STD0001/s1reporting1_beatrice/01_input/ae.sas7bdat"
-#col <- "AETERM"
-#val <- "発熱"
-#out_base <- "/studies/STD0001/s1reporting1_beatrice/02_output/fever"
-#out_base <- "/studies/STD0001/s1reporting1_beatrice/02_output/fever.csv"
-
-### Using Logger: Arguments information ###
-log_info("Arguments detail", action="arg_parse", input=in_path, column=col, searchValue=val, output=out_base)
-###########################################
 
 #print(in_path)
 #stopifnot(file.exists(in_path))
